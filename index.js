@@ -40,6 +40,20 @@ async function run() {
         res.send(result);
     })
 
+    // POST USER DATA WHEN LOGIN WITH GOOGLE
+    app.post("/userGoogleRegister", async (req, res) => {
+        const userDetails = req.body;
+        let checkEmail = userDetails.email;
+        const existingUser = await userCollection.findOne({ email: checkEmail });
+
+        if (existingUser) {
+            return res.status(409).json({ error: 'Email already exists' });
+        }
+
+        let result = await userCollection.insertOne(userDetails);
+        res.send(result);
+    });
+
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
