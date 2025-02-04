@@ -35,23 +35,33 @@ async function run() {
 
     // POST DATA OF USER TO MONGO DATABASE WHEN REGISTER 
     app.post("/userRegister", async (req, res) => {
-        let user = req.body;
-        let result = await userCollection.insertOne(user);
-        res.send(result);
+      let user = req.body;
+      let result = await userCollection.insertOne(user);
+      res.send(result);
     })
 
     // POST USER DATA WHEN LOGIN WITH GOOGLE
     app.post("/userGoogleRegister", async (req, res) => {
-        const userDetails = req.body;
-        let checkEmail = userDetails.email;
-        const existingUser = await userCollection.findOne({ email: checkEmail });
+      const userDetails = req.body;
+      let checkEmail = userDetails.email;
+      const existingUser = await userCollection.findOne({ email: checkEmail });
 
-        if (existingUser) {
-            return res.status(409).json({ error: 'Email already exists' });
-        }
+      if (existingUser) {
+        return res.status(409).json({ error: 'Email already exists' });
+      }
 
-        let result = await userCollection.insertOne(userDetails);
-        res.send(result);
+      let result = await userCollection.insertOne(userDetails);
+      res.send(result);
+    });
+
+    // API TO GET CURRENT USER DATA 
+    app.get("/userData/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = {
+        email: email,
+      };
+      const result = await userCollection.findOne(query);
+      res.send(result);
     });
 
   } finally {
