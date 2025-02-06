@@ -72,6 +72,46 @@ async function run() {
       res.send(result);
     })
 
+    // API TO GET TRANSACTIONS 
+    app.get("/transactions", async (req, res) => {
+      const { email, searchTerm, selectedFilterValue, selectedCategoryValue } = req.query;
+    
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+    
+      let query = { userEmail: email }; 
+    
+      if (searchTerm) {
+        query.transactionName = { $regex: searchTerm, $options: "i" };
+      }
+    
+      if (selectedCategoryValue && selectedCategoryValue !== "general") {
+        query.category = selectedCategoryValue;
+      }
+    
+      let sortQuery = {};
+      if (selectedFilterValue === "latest") {
+        sortQuery.transactionDate = -1;  
+      } else if (selectedFilterValue === "oldest") {
+        sortQuery.transactionDate = 1;  
+      } else if (selectedFilterValue === "highest") {
+        sortQuery.amount = -1;
+      } else if (selectedFilterValue === "lowest") {
+        sortQuery.amount = 1; 
+      }
+    
+      try {
+        const transactions = await transactionCollections.find(query).sort(sortQuery).toArray();
+        res.send(transactions);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        res.status(500).json({ error: "Error fetching transactions" });
+      }
+    });
+    
+    
+
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
