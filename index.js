@@ -32,6 +32,7 @@ async function run() {
 
     // COLLECTIONS 
     const userCollection = client.db("SpendSmart").collection("users");
+    const transactionCollections = client.db("SpendSmart").collection("transactions");
 
     // POST DATA OF USER TO MONGO DATABASE WHEN REGISTER 
     app.post("/userRegister", async (req, res) => {
@@ -63,6 +64,13 @@ async function run() {
       const result = await userCollection.findOne(query);
       res.send(result);
     });
+
+    // API TO ADD TRANSACTIONS 
+    app.post("/addTransaction", async (req, res) => {
+      let transactions = req.body;
+      let result = await transactionCollections.insertOne(transactions);
+      res.send(result);
+    })
 
   } finally {
     // Ensures that the client will close when you finish/error
