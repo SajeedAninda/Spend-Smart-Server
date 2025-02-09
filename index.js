@@ -33,6 +33,7 @@ async function run() {
     // COLLECTIONS 
     const userCollection = client.db("SpendSmart").collection("users");
     const transactionCollections = client.db("SpendSmart").collection("transactions");
+    const budgetCollections = client.db("SpendSmart").collection("budgets");
 
     // POST DATA OF USER TO MONGO DATABASE WHEN REGISTER 
     app.post("/userRegister", async (req, res) => {
@@ -109,6 +110,13 @@ async function run() {
         res.status(500).json({ error: "Error fetching transactions" });
       }
     });
+
+    // API TO ADD BUDGET 
+    app.post("/addBudget", async (req, res) => {
+      let budgetOptions = req.body;
+      let result = await budgetCollections.insertOne(budgetOptions);
+      res.send(result);
+    })
     
     
 
