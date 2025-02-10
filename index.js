@@ -111,6 +111,17 @@ async function run() {
       }
     });
 
+    // API TO GET TRANSACTIONS WITHOUT FILTERS 
+    app.get("/getTransactions", async (req, res) => {
+      let email = req.query.email;
+      if (!email) {
+        return res.status(400).send({ error: "Email is required" });
+      }
+      let query = { userEmail: email };
+      const result = await transactionCollections.find(query).toArray();
+      res.send(result);
+    });
+
     // API TO ADD BUDGET 
     app.post("/addBudget", async (req, res) => {
       let budgetOptions = req.body;
