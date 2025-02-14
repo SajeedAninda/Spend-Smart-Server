@@ -10,7 +10,7 @@ app.use(express.json());
 const port = 5000
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `${process.env.MONGO_URI}`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -133,6 +133,15 @@ async function run() {
       res.send({ insertedId: result.insertedId });
     });
 
+    // API TO DELETE BUDGET 
+    app.delete("/budgetDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: new ObjectId(id),
+      };
+      const result = await budgetCollections.deleteOne(query);
+      res.send(result);
+    });
 
     // API TO GET BUDGET DATA 
     app.get("/budgets", async (req, res) => {
