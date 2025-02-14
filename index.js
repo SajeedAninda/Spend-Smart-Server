@@ -124,10 +124,15 @@ async function run() {
 
     // API TO ADD BUDGET 
     app.post("/addBudget", async (req, res) => {
-      let budgetOptions = req.body;
-      let result = await budgetCollections.insertOne(budgetOptions);
-      res.send(result);
-    })
+      const { category, maxSpendAmount, colorTheme, userEmail } = req.body;
+      const existingBudget = await budgetCollections.findOne({ category, userEmail });
+      if (existingBudget) {
+        return res.send({ exists: true });
+      }
+      const result = await budgetCollections.insertOne({ category, maxSpendAmount, colorTheme, userEmail });
+      res.send({ insertedId: result.insertedId });
+    });
+
 
     // API TO GET BUDGET DATA 
     app.get("/budgets", async (req, res) => {
