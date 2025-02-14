@@ -143,6 +143,21 @@ async function run() {
       res.send(result);
     });
 
+    // API TO UPDATE BUDGET 
+    app.patch('/budgetUpdate/:id', async (req, res) => {
+      const { id } = req.params
+      const { maxSpendAmount, colorTheme } = req.body
+
+      const result = await budgetCollections.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { maxSpendAmount, colorTheme } }
+      )
+
+      res.json(result)
+    })
+
+
+
     // API TO GET BUDGET DATA 
     app.get("/budgets", async (req, res) => {
       let email = req.query.email;
