@@ -156,16 +156,7 @@ async function run() {
 
       res.json(result)
     })
-
-    // API TO ADD PIGGY BANK
-    app.post("/addPiggyBank", async (req, res) => {
-      let piggyBank = req.body;
-      let result = await piggyBankCollections.insertOne(piggyBank);
-      res.send(result);
-    })
-
-
-
+    
     // API TO GET BUDGET DATA 
     app.get("/budgets", async (req, res) => {
       let email = req.query.email;
@@ -176,9 +167,25 @@ async function run() {
       const result = await budgetCollections.find(query).toArray();
       res.send(result);
     });
-
-
-
+    
+    // API TO ADD PIGGY BANK
+    app.post("/addPiggyBank", async (req, res) => {
+      let piggyBank = req.body;
+      let result = await piggyBankCollections.insertOne(piggyBank);
+      res.send(result);
+    })
+    
+    // API TO GET PIGGYBANK DATA 
+    app.get("/getPiggyBank", async (req, res) => {
+      let email = req.query.email;
+      if (!email) {
+        return res.status(400).send({ error: "Email is required" });
+      }
+      let query = { userEmail: email };
+      const result = await piggyBankCollections.find(query).toArray();
+      res.send(result);
+    });
+    
 
   } finally {
     // Ensures that the client will close when you finish/error
