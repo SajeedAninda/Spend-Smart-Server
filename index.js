@@ -34,6 +34,7 @@ async function run() {
     const userCollection = client.db("SpendSmart").collection("users");
     const transactionCollections = client.db("SpendSmart").collection("transactions");
     const budgetCollections = client.db("SpendSmart").collection("budgets");
+    const piggyBankCollections = client.db("SpendSmart").collection("piggyBank");
 
     // POST DATA OF USER TO MONGO DATABASE WHEN REGISTER 
     app.post("/userRegister", async (req, res) => {
@@ -154,6 +155,13 @@ async function run() {
       )
 
       res.json(result)
+    })
+
+    // API TO ADD PIGGY BANK
+    app.post("/addPiggyBank", async (req, res) => {
+      let piggyBank = req.body;
+      let result = await piggyBankCollections.insertOne(piggyBank);
+      res.send(result);
     })
 
 
