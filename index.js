@@ -195,6 +195,19 @@ async function run() {
       const result = await piggyBankCollections.deleteOne(query);
       res.send(result);
     });
+
+    // API TO UPDATE PIGGY BANK 
+    app.patch('/piggyBankUpdate/:id', async (req, res) => {
+      const { id } = req.params
+      const {piggyBankName, targetSpend, colorTheme } = req.body
+
+      const result = await piggyBankCollections.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: {piggyBankName, targetSpend, colorTheme } }
+      )
+
+      res.json(result)
+    })
     
 
   } finally {
