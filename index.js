@@ -185,6 +185,16 @@ async function run() {
       const result = await piggyBankCollections.find(query).toArray();
       res.send(result);
     });
+
+    // API TO DELETE PIGGY BANK 
+    app.delete("/piggyBankDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: new ObjectId(id),
+      };
+      const result = await piggyBankCollections.deleteOne(query);
+      res.send(result);
+    });
     
 
   } finally {
