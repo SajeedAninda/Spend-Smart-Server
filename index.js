@@ -222,6 +222,20 @@ async function run() {
       res.json(result);
     });
 
+    // API TO WITHDRAW MONEY FROM PIGGY BANK
+    app.patch('/withdrawMoney/:id', async (req, res) => {
+      const { id } = req.params
+      const { withdrawnAmount } = req.body
+
+      const result = await piggyBankCollections.updateOne(
+        { _id: new ObjectId(id) },
+        { $inc: { availableBalance: -withdrawnAmount } } // Decrease balance
+      )
+
+      res.json(result)
+    })
+
+
 
 
   } finally {
