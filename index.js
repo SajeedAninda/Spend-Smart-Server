@@ -156,7 +156,7 @@ async function run() {
 
       res.json(result)
     })
-    
+
     // API TO GET BUDGET DATA 
     app.get("/budgets", async (req, res) => {
       let email = req.query.email;
@@ -167,14 +167,14 @@ async function run() {
       const result = await budgetCollections.find(query).toArray();
       res.send(result);
     });
-    
+
     // API TO ADD PIGGY BANK
     app.post("/addPiggyBank", async (req, res) => {
       let piggyBank = req.body;
       let result = await piggyBankCollections.insertOne(piggyBank);
       res.send(result);
     })
-    
+
     // API TO GET PIGGYBANK DATA 
     app.get("/getPiggyBank", async (req, res) => {
       let email = req.query.email;
@@ -199,16 +199,30 @@ async function run() {
     // API TO UPDATE PIGGY BANK 
     app.patch('/piggyBankUpdate/:id', async (req, res) => {
       const { id } = req.params
-      const {piggyBankName, targetSpend, colorTheme } = req.body
+      const { piggyBankName, targetSpend, colorTheme } = req.body
 
       const result = await piggyBankCollections.updateOne(
         { _id: new ObjectId(id) },
-        { $set: {piggyBankName, targetSpend, colorTheme } }
+        { $set: { piggyBankName, targetSpend, colorTheme } }
       )
 
       res.json(result)
     })
-    
+
+    // API TO ADD MONEY TO PIGGY BANK 
+    app.patch('/addMoney/:id', async (req, res) => {
+      const { id } = req.params;
+      const { addedAmount } = req.body;
+
+      const result = await piggyBankCollections.updateOne(
+        { _id: new ObjectId(id) },
+        { $inc: { availableBalance: addedAmount } } // Increment availableBalance
+      );
+
+      res.json(result);
+    });
+
+
 
   } finally {
     // Ensures that the client will close when you finish/error
