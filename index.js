@@ -35,7 +35,8 @@ async function run() {
     const transactionCollections = client.db("SpendSmart").collection("transactions");
     const budgetCollections = client.db("SpendSmart").collection("budgets");
     const piggyBankCollections = client.db("SpendSmart").collection("piggyBank");
-
+    const recurringBillCollections = client.db("SpendSmart").collection("recurringBills");
+    
     // POST DATA OF USER TO MONGO DATABASE WHEN REGISTER 
     app.post("/userRegister", async (req, res) => {
       let user = req.body;
@@ -233,6 +234,13 @@ async function run() {
       )
 
       res.json(result)
+    })
+
+    // API TO ADD RECURRING BILL 
+    app.post("/addRecurringBill", async (req, res) => {
+      let recurringBill = req.body;
+      let result = await recurringBillCollections.insertOne(recurringBill);
+      res.send(result);
     })
 
 
