@@ -36,7 +36,7 @@ async function run() {
     const budgetCollections = client.db("SpendSmart").collection("budgets");
     const piggyBankCollections = client.db("SpendSmart").collection("piggyBank");
     const recurringBillCollections = client.db("SpendSmart").collection("recurringBills");
-    
+
     // POST DATA OF USER TO MONGO DATABASE WHEN REGISTER 
     app.post("/userRegister", async (req, res) => {
       let user = req.body;
@@ -253,6 +253,53 @@ async function run() {
       const result = await recurringBillCollections.find(query).toArray();
       res.send(result);
     });
+
+    // API TO GET BILLS BASED ON FILTER 
+    app.get("/allFilteredBills", async (req, res) => {
+      const { email, searchTerm, selectedFilterValue } = req.query;
+
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      let query = { currentUserEmail: email };
+
+      if (searchTerm) {
+        query.billNameText = { $regex: searchTerm, $options: "i" };
+      }
+
+      let sortQuery = {};
+      if (selectedFilterValue === "latest") {
+        sortQuery.billDueDay = -1;
+      } else if (selectedFilterValue === "oldest") {
+        sortQuery.billDueDay = 1;
+      } else if (selectedFilterValue === "highest") {
+        sortQuery.billingAmount = -1;
+      } else if (selectedFilterValue === "lowest") {
+        sortQuery.billingAmount = 1;
+      }
+
+      try {
+        const filteredBills = await recurringBillCollections
+          .aggregate([
+            { $match: query },
+            {
+              $addFields: {
+                billingAmount: { $toDouble: "$billingAmount" },
+                billDueDay: { $toInt: "$billDueDay" }
+              }
+            },
+            { $sort: sortQuery }
+          ])
+          .toArray();
+
+        res.send(filteredBills);
+      } catch (error) {
+        console.error("Error fetching Bills:", error);
+        res.status(500).json({ error: "Error fetching Bills" });
+      }
+    });
+
 
 
 
