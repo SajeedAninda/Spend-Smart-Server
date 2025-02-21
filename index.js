@@ -243,6 +243,17 @@ async function run() {
       res.send(result);
     })
 
+    // AP TO GET ALL RECURRING BILLS 
+    app.get("/allBills", async (req, res) => {
+      let email = req.query.email;
+      if (!email) {
+        return res.status(400).send({ error: "Email is required" });
+      }
+      let query = { currentUserEmail: email };
+      const result = await recurringBillCollections.find(query).toArray();
+      res.send(result);
+    });
+
 
 
 
