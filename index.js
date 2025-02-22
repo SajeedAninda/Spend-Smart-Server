@@ -300,8 +300,26 @@ async function run() {
       }
     });
 
+    // API TO CHANGE BILL STATUS 
+    app.patch('/updateBillStatus/:id', async (req, res) => {
+      const billId = req.params.id
+      const { billStatus } = req.body
 
+      try {
+        const updatedBill = await recurringBillCollections.updateOne(
+          { _id: new ObjectId(billId) },
+          { $set: { billStatus } }
+        )
 
+        if (updatedBill.modifiedCount > 0) {
+          res.status(200).json({ message: 'Bill status updated successfully' })
+        } else {
+          res.status(400).json({ message: 'No changes made' })
+        }
+      } catch (error) {
+        res.status(500).json({ message: 'Error updating bill status', error })
+      }
+    })
 
 
   } finally {
