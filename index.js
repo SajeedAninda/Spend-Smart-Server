@@ -28,7 +28,7 @@ async function run() {
     // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
     // COLLECTIONS 
     const userCollection = client.db("SpendSmart").collection("users");
@@ -343,7 +343,7 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Spend Smart Server is running!')
 })
 
 app.listen(port, () => {
